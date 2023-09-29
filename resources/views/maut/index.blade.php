@@ -173,7 +173,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($karyawans as $item)
+            @foreach ($sorted_karyawans as $item)
                 <tr>
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $item->nama }}</td>

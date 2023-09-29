@@ -19,12 +19,12 @@ class MAUTController extends Controller
 
         foreach ($karyawans as $karyawan) {
             $alternatif = new stdClass();
-            $alternatif->kehadiran = round($karyawan->kehadiran / 20, 1);
-            $alternatif->kemampuan = round($karyawan->kemampuan / 100, 1);
-            $alternatif->kinerja = round($karyawan->kinerja / 100, 1);
-            $alternatif->keaktifan = round($karyawan->keaktifan / 100, 1);
-            $alternatif->kontribusi = round($karyawan->kontribusi / 100, 1);
-            $alternatif->cuti = round((12 - $karyawan->cuti) / 12, 1);
+            $alternatif->kehadiran = number_format($karyawan->kehadiran / 20, 1);
+            $alternatif->kemampuan = number_format($karyawan->kemampuan / 100, 1);
+            $alternatif->kinerja = number_format($karyawan->kinerja / 100, 1);
+            $alternatif->keaktifan = number_format($karyawan->keaktifan / 100, 1);
+            $alternatif->kontribusi = number_format($karyawan->kontribusi / 100, 1);
+            $alternatif->cuti = number_format((12 - $karyawan->cuti) / 12, 1);
 
             $karyawan->alternatif = $alternatif;
         }
@@ -63,12 +63,12 @@ class MAUTController extends Controller
         //normalisasi matriks
         foreach ($karyawans as $karyawan) {
             $normalisasi = new stdClass();
-            $normalisasi->kehadiran = round(($karyawan->alternatif->kehadiran - $min->kehadiran) / ($max->kehadiran - $min->kehadiran), 3);
-            $normalisasi->kemampuan = round(($karyawan->alternatif->kemampuan - $min->kemampuan) / ($max->kemampuan - $min->kemampuan), 3);
-            $normalisasi->kinerja = round(($karyawan->alternatif->kinerja - $min->kinerja) / ($max->kinerja - $min->kinerja), 3);
-            $normalisasi->keaktifan = round(($karyawan->alternatif->keaktifan - $min->keaktifan) / ($max->keaktifan - $min->keaktifan), 3);
-            $normalisasi->kontribusi = round(($karyawan->alternatif->kontribusi - $min->kontribusi) / ($max->kontribusi - $min->kontribusi), 3);
-            $normalisasi->cuti = round(($karyawan->alternatif->cuti - $min->cuti) / ($max->cuti - $min->cuti), 3);
+            $normalisasi->kehadiran = number_format(($karyawan->alternatif->kehadiran - $min->kehadiran) / ($max->kehadiran - $min->kehadiran), 3);
+            $normalisasi->kemampuan = number_format(($karyawan->alternatif->kemampuan - $min->kemampuan) / ($max->kemampuan - $min->kemampuan), 3);
+            $normalisasi->kinerja = number_format(($karyawan->alternatif->kinerja - $min->kinerja) / ($max->kinerja - $min->kinerja), 3);
+            $normalisasi->keaktifan = number_format(($karyawan->alternatif->keaktifan - $min->keaktifan) / ($max->keaktifan - $min->keaktifan), 3);
+            $normalisasi->kontribusi = number_format(($karyawan->alternatif->kontribusi - $min->kontribusi) / ($max->kontribusi - $min->kontribusi), 3);
+            $normalisasi->cuti = number_format(($karyawan->alternatif->cuti - $min->cuti) / ($max->cuti - $min->cuti), 3);
 
             $karyawan->normalisasi = $normalisasi;
         }
@@ -76,26 +76,28 @@ class MAUTController extends Controller
         //menghitung vx = Wi * bobot
         foreach ($karyawans as $karyawan) {
             $vx = new stdClass();
-            $vx->kehadiran = round($karyawan->normalisasi->kehadiran * $bobot->kehadiran, 3);
-            $vx->kemampuan = round($karyawan->normalisasi->kemampuan * $bobot->kemampuan, 3);
-            $vx->kinerja = round($karyawan->normalisasi->kinerja * $bobot->kinerja, 3);
-            $vx->keaktifan = round($karyawan->normalisasi->keaktifan * $bobot->keaktifan, 3);
-            $vx->kontribusi = round($karyawan->normalisasi->kontribusi * $bobot->kontribusi, 3);
-            $vx->cuti = round($karyawan->normalisasi->cuti * $bobot->cuti, 3);
-            $vx->total = round($vx->kehadiran + $vx->kemampuan + $vx->kinerja + $vx->keaktifan + $vx->kontribusi + $vx->cuti, 3);
+            $vx->kehadiran = number_format($karyawan->normalisasi->kehadiran * $bobot->kehadiran, 3);
+            $vx->kemampuan = number_format($karyawan->normalisasi->kemampuan * $bobot->kemampuan, 3);
+            $vx->kinerja = number_format($karyawan->normalisasi->kinerja * $bobot->kinerja, 3);
+            $vx->keaktifan = number_format($karyawan->normalisasi->keaktifan * $bobot->keaktifan, 3);
+            $vx->kontribusi = number_format($karyawan->normalisasi->kontribusi * $bobot->kontribusi, 3);
+            $vx->cuti = number_format($karyawan->normalisasi->cuti * $bobot->cuti, 3);
+            $vx->total = number_format($vx->kehadiran + $vx->kemampuan + $vx->kinerja + $vx->keaktifan + $vx->kontribusi + $vx->cuti, 3);
 
             $karyawan->vx = $vx;
         }
 
         //menghitung total vx
         foreach ($karyawans as $karyawan) {
-            $karyawan->total = round($karyawan->vx->kehadiran + $karyawan->vx->kemampuan + $karyawan->vx->kinerja + $karyawan->vx->keaktifan + $karyawan->vx->kontribusi + $karyawan->vx->cuti, 3);
+            $karyawan->total = number_format($karyawan->vx->kehadiran + $karyawan->vx->kemampuan + $karyawan->vx->kinerja + $karyawan->vx->keaktifan + $karyawan->vx->kontribusi + $karyawan->vx->cuti, 3);
         }
 
         //menghitung ranking dengan angka
         foreach ($karyawans as $karyawan) {
             $karyawan->ranking = $karyawans->where('total', '>', $karyawan->total)->count() + 1;
         }
+
+        $sorted_karyawans = $karyawans->sortByDesc('total');
 
         //menghitung ranking dengan total vx
         // $karyawans = $karyawans->sortByDesc('total');
@@ -111,6 +113,6 @@ class MAUTController extends Controller
         //     ]
         // ], 200);
 
-        return view('maut.index', compact('karyawans', 'bobot', 'max', 'min'));
+        return view('maut.index', compact('karyawans', 'bobot', 'max', 'min', 'sorted_karyawans'));
     }
 }
